@@ -9,3 +9,16 @@ class Aluno(Model):
 
     def __repr__(self):
         return self.name
+    
+class Contact(Model):
+    id = Column(Integer, primary_key=True)
+    nome =  Column(String(150), unique = True, nullable=False)
+    enredeco =  Column(String(564), default='Street ')
+    data_nasc = Column(Date)
+    telefone = Column(String(20))
+    celular = Column(String(20))
+    aluno_id = Column(Integer, ForeignKey('aluno.id'))
+    aluno = relationship("Aluno")
+
+    def __repr__(self):
+        return self.name
