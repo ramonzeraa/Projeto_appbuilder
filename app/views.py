@@ -1,50 +1,43 @@
-from flask import render_template
+from flask_appbuilder import ModelView, AppBuilder
 from flask_appbuilder.models.sqla.interface import SQLAInterface
-from flask_appbuilder import ModelView, ModelRestApi
-
-from . import appbuilder, db
-
-"""
-    Create your Model based REST API::
-
-    class MyModelApi(ModelRestApi):
-        datamodel = SQLAInterface(MyModel)
-
-    appbuilder.add_api(MyModelApi)
+from models import Aluno, Informacoes
+from run import db, appbuilder
 
 
-    Create your Views::
+class AlunoModelView(ModelView):
+    datamodel = SQLAInterface(Aluno)
+    related_views = []  # Corrigido para o ModelView correspondente
 
 
-    class MyModelView(ModelView):
-        datamodel = SQLAInterface(MyModel)
+class InformacoesModelView(ModelView):  # Crie uma ModelView para Informacoes
+    datamodel = SQLAInterface(Informacoes)
+    related_views = [AlunoModelView]
+    
+    label_columns = {'aluno':'Aluno'}
+    list_columns = ['id','celular','data_nasc']
 
-
-    Next, register your Views::
-
-
-    appbuilder.add_view(
-        MyModelView,
-        "My View",
-        icon="fa-folder-open-o",
-        category="My Category",
-        category_icon='fa-envelope'
-    )
-"""
-
-"""
-    Application wide 404 error handler
-"""
-
-
-@appbuilder.app.errorhandler(404)
-def page_not_found(e):
-    return (
-        render_template(
-            "404.html", base_template=appbuilder.base_template, appbuilder=appbuilder
+    show_fieldsets = [
+        (
+            'Sumário',
+            {'Campos': ['name', 'address', 'aluno']}
         ),
-        404,
-    )
-
-
+        (
+            'Info. Pessoais',
+            {'Campos': ['data_nasc', 'celular', 'endereco'], 'expanded': False}
+        ),
+    ]
+    
 db.create_all()
+appbuilder.add_view(
+    AlunoModelView,
+    "List Groups",
+    icon = "fa-folder-open-o",
+    category = "Gestão",
+    category_icon = "fa-envelope"
+)
+appbuilder.add_view(
+    InformacoesModelView,
+    "List Contacts",
+    icon = "fa-envelope",
+    category = "Gestão"
+)
