@@ -8,16 +8,16 @@ class InformacoesModelView(ModelView):
     datamodel = SQLAInterface(CadastroAluno)
 
     label_columns = {'aluno': 'Aluno'}
-    list_columns = ['id', 'nome', 'celular', 'data_nasc']  # Adicione 'nome' à lista de colunas
+    list_columns = ['id', 'nome', 'celular', 'data_nasc'] 
 
     show_fieldsets = [
         (
             'Sumário',
-            {'fields': ['nome', 'endereco', 'aluno']}  # Corrigido 'Campos' para 'fields'
+            {'fields': ['nome', 'endereco', 'aluno']}  
         ),
         (
             'Informações Pessoais',
-            {'fields': ['data_nasc', 'celular', 'telefone'], 'expanded': False}  # Ajustado para 'telefone' e 'endereco'
+            {'fields': ['data_nasc', 'celular', 'telefone'], 'expanded': False}  
         ),
     ]
 
@@ -33,23 +33,22 @@ class EscolaModelView(ModelView):
             {'fields': ['nome', 'endereco', 'telefone']}
         ),
     ]
-# Cria as tabelas no banco de dados
+
 db.create_all()
 
-# Adiciona as views ao app
 
 
 appbuilder.add_view(
     InformacoesModelView,
-    "Cadastrar Alunos",  # Nome alterado para "Listar Informações"
+    "Cadastrar Alunos",  
     icon="fa-envelope",
     category="Gestão"
 )
 
 appbuilder.add_view(
     EscolaModelView,
-    "Cadastrar Escolas",  # Nome da nova view
-    icon="fa-building",  # Ícone para a nova view
+    "Cadastrar Escolas",  
+    icon="fa-building",  
     category="Gestão",
     category_icon="fa-envelope"
 )
