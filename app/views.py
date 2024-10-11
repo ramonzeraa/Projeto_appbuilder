@@ -1,43 +1,55 @@
 from flask_appbuilder import ModelView, AppBuilder
 from flask_appbuilder.models.sqla.interface import SQLAInterface
-from models import Aluno, Informacoes
-from run import db, appbuilder
+from .models import  CadastroAluno, Escola
+from app import db, appbuilder
 
 
-class AlunoModelView(ModelView):
-    datamodel = SQLAInterface(Aluno)
-    related_views = []  # Corrigido para o ModelView correspondente
+class InformacoesModelView(ModelView):
+    datamodel = SQLAInterface(CadastroAluno)
 
-
-class InformacoesModelView(ModelView):  # Crie uma ModelView para Informacoes
-    datamodel = SQLAInterface(Informacoes)
-    related_views = [AlunoModelView]
-    
-    label_columns = {'aluno':'Aluno'}
-    list_columns = ['id','celular','data_nasc']
+    label_columns = {'aluno': 'Aluno'}
+    list_columns = ['id', 'nome', 'celular', 'data_nasc']  # Adicione 'nome' à lista de colunas
 
     show_fieldsets = [
         (
             'Sumário',
-            {'Campos': ['name', 'address', 'aluno']}
+            {'fields': ['nome', 'endereco', 'aluno']}  # Corrigido 'Campos' para 'fields'
         ),
         (
-            'Info. Pessoais',
-            {'Campos': ['data_nasc', 'celular', 'endereco'], 'expanded': False}
+            'Informações Pessoais',
+            {'fields': ['data_nasc', 'celular', 'telefone'], 'expanded': False}  # Ajustado para 'telefone' e 'endereco'
         ),
     ]
-    
+
+class EscolaModelView(ModelView):
+    datamodel = SQLAInterface(Escola)
+
+    label_columns = {'nome': 'Nome da Escola', 'endereco': 'Endereço', 'telefone': 'Telefone'}
+    list_columns = ['id', 'nome', 'endereco', 'telefone']
+
+    show_fieldsets = [
+        (
+            'Informações da Escola',
+            {'fields': ['nome', 'endereco', 'telefone']}
+        ),
+    ]
+# Cria as tabelas no banco de dados
 db.create_all()
-appbuilder.add_view(
-    AlunoModelView,
-    "List Groups",
-    icon = "fa-folder-open-o",
-    category = "Gestão",
-    category_icon = "fa-envelope"
-)
+
+# Adiciona as views ao app
+
+
 appbuilder.add_view(
     InformacoesModelView,
-    "List Contacts",
-    icon = "fa-envelope",
-    category = "Gestão"
+    "Cadastrar Alunos",  # Nome alterado para "Listar Informações"
+    icon="fa-envelope",
+    category="Gestão"
+)
+
+appbuilder.add_view(
+    EscolaModelView,
+    "Cadastrar Escolas",  # Nome da nova view
+    icon="fa-building",  # Ícone para a nova view
+    category="Gestão",
+    category_icon="fa-envelope"
 )
