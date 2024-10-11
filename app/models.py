@@ -1,24 +1,27 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from flask_appbuilder import Model
-
-class Aluno(Model):
-    id = Column(Integer, primary_key=True)
-    nome = Column(String(50), unique = True, nullable=False)
-    matricula = Column(String(20), unique = True, nullable=False)
-
-    def __repr__(self):
-        return self.nome
+from app import db
     
-class Informacoes(Model):
+class CadastroAluno(Model):
     id = Column(Integer, primary_key=True)
     nome =  Column(String(150), unique = True, nullable=False)
     enredeco =  Column(String(564), default='Street ')
     data_nasc = Column(Date)
     telefone = Column(String(20))
     celular = Column(String(20))
-    aluno_id = Column(Integer, ForeignKey('aluno.id'))
-    aluno = relationship("Aluno")
+    Cadastro_aluno_id = Column(Integer, ForeignKey('cadastro_aluno.id'))
+
 
     def __repr__(self):
         return self.nome
+    
+class Escola(Model):
+    id = Column(Integer, primary_key=True)
+    nome = Column(String(100), nullable=False)
+    endereco = Column(String(200), nullable=False)
+    telefone = Column(String(20), nullable=True)
+    data_fundacao = Column(Date)
+    
+    def __repr__(self):
+        return f"<Escola {self.nome}>"
